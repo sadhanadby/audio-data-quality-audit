@@ -1,1 +1,42 @@
+CREATE DATABASE AudioDataQualityAudit;
+USE AudioDataQualityAudit;
 
+CREATE TABLE metadata (
+    filename VARCHAR(255),
+    genre VARCHAR(50),
+    filepath VARCHAR(255)
+);
+drop table metadata;
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8/Uploads/metadata_fixed.csv'
+INTO TABLE metadata
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- ==============================
+-- Step 1: Data Overview
+-- ==============================
+
+-- 1. Total Records
+-- Check how many records are available
+SELECT COUNT(*) AS Total_Records 
+FROM metadata;
+
+-- 2. Sample Data
+-- Preview the first 10 records
+SELECT * FROM metadata LIMIT 10;
+
+-- 3. Column Names and Data Types
+-- Understand the structure of the table
+DESCRIBE metadata;
+
+-- 4. Unique Genres
+-- Validate the genres available in the dataset
+SELECT DISTINCT genre FROM metadata;
+
+-- 5. File Path Consistency
+-- Identify file path issues
+SELECT COUNT(*)
+FROM metadata
+WHERE filepath NOT LIKE CONCAT('%', genre, '/%', filename);
