@@ -40,3 +40,26 @@ SELECT DISTINCT genre FROM metadata;
 SELECT COUNT(*)
 FROM metadata
 WHERE filepath NOT LIKE CONCAT('%', genre, '/%', filename);
+
+-- ==============================
+-- Step 2: Data Cleaning Validation
+-- ==============================
+
+-- 6. Missing values
+-- Identified null or missing values for genre, filename, filepath
+SELECT *
+FROM metadata
+WHERE genre IS NULL OR filename IS NULL OR filepath IS NULL;
+
+-- 7. Check for incorrect file extentions
+SELECT *
+FROM metadata
+WHERE filename NOT LIKE '%.wav';
+
+-- 8. Check for duplicate entries
+SELECT filename, genre, COUNT(*) 
+FROM metadata
+GROUP BY filename, genre
+HAVING COUNT(*) > 1;
+
+-- -- Result: No missing values, incorrect file extensions, or duplicates found.
