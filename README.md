@@ -35,3 +35,10 @@ Stay tuned for updates!
 
 **Next Step:** Proceeding to data cleaning and transformation to prepare the dataset for further analysis.
 
+### ✅ Step 2: Data Cleaning and Transformation
+
+- Conducted data cleaning checks to ensure data quality.
+- Verified that there are no missing values, incorrect file extensions, or duplicate entries.
+- Data is clean and ready for analysis.
+
+**Next Step:** Proceeding with Exploratory Data Analysis (EDA) to derive insights from the dataset.
