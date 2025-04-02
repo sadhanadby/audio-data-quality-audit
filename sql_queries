@@ -6,7 +6,10 @@ CREATE TABLE metadata (
     genre VARCHAR(50),
     filepath VARCHAR(255)
 );
-drop table metadata;
+
+ALTER TABLE metadata
+ADD duration DECIMAL(10,8);
+
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8/Uploads/metadata_fixed.csv'
 INTO TABLE metadata
 FIELDS TERMINATED BY ','
@@ -63,3 +66,64 @@ GROUP BY filename, genre
 HAVING COUNT(*) > 1;
 
 -- -- Result: No missing values, incorrect file extensions, or duplicates found.
+
+-- ==========================================
+-- Step 3: Exploratory Data Analysis (EDA)
+-- ==========================================
+
+-- 9. Genre Distribution
+--  Question: How many tracks are there in each genre?
+--  Why? To see which genres dominate and which are underrepresented.
+
+SELECT genre, COUNT(*) AS track_count
+FROM metadata
+GROUP BY genre
+ORDER BY track_count DESC;
+
+-- 10. Duration Statistics per genre
+-- Question: What is the average, minimum, and maximum duration for each genre?
+-- Why? To detect outliers and understand genre-wise duration trends.
+
+SELECT genre,
+	COUNT(*) AS total_tracks,
+    ROUND(AVG(duration), 2) AS avg_duration,
+    MAX(duration) AS max_duartion,
+    MIN(duration) AS min_duration
+FROM metadata
+GROUP BY genre
+ORDER BY avg_duration;
+
+-- 11. Track duration outliers
+-- Question: Are there any tracks that are much shorter or longer than expected?
+-- Why? To detect anomalies (corrupt/incomplete files).
+
+SELECT *
+FROM metadata
+WHERE duration < 10 OR duration > 40
+ORDER BY duration;
+
+-- 12. Filepath Consistency Check
+-- Question: Do all file paths contain the correct genre?
+-- Why? To find misplaced or incorrectly labeled tracks.
+
+SELECT * 
+FROM metadata
+WHERE filepath NOT LIKE CONCAT('%', genre, '%');
+
+-- 13. Duplicate tracks
+-- Question: Do we have tracks with the same name but different genres?
+-- Why? To detect misclassifications.
+
+SELECT filename, COUNT(DISTINCT genre) AS genre_count
+FROM metadata
+GROUP BY filename
+HAVING genre_count > 1;
+
+-- 14. Identical Filenames with Different Durations
+-- Question: Are there tracks with the same filename but different durations?
+-- Why? To identify inconsistencies or duplicate files.
+
+SELECT filename, COUNT(DISTINCT duration) AS duration_variants
+FROM metadata
+GROUP BY filename
+HAVING duration_variants > 1;
