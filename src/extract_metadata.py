@@ -45,3 +45,26 @@ df = pd.DataFrame(data, columns=["TrackName", "Genre", "FilePath"])
 df.to_csv('data/metadata.csv', index=False)
 print("✅ Metadata saved as data/metadata.csv")
 
+# Load the metadata and features data
+metadata_path = 'data/metadata_fixed.csv'
+features_path = 'data/features_30_sec.csv'
+
+metadata_df = pd.read_csv(metadata_path)
+features_df = pd.read_csv(features_path)
+
+# Rename 'TrackName' to 'filename' for consistency
+metadata_df = metadata_df.rename(columns={'TrackName': 'filename'})
+
+# Calculate duration using the formula: Duration (seconds) = Length / 22050
+features_df['duration'] = features_df['length'] / 22050
+
+# Select only necessary columns for merging
+features_selected_df = features_df[['filename', 'duration']]
+
+# Merge the two dataframes using 'filename' as the key
+merged_df = pd.merge(metadata_df, features_selected_df, on='filename', how='left')
+
+# Save the updated data to a new CSV
+merged_df.to_csv(r'data/metadata_with_duration.csv', index=False)
+
+print("metadata_with_duration.csv created successfully!")
