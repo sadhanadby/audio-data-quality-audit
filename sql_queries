@@ -127,3 +127,51 @@ SELECT filename, COUNT(DISTINCT duration) AS duration_variants
 FROM metadata
 GROUP BY filename
 HAVING duration_variants > 1;
+
+
+-- ==============================================
+-- Step 4: Deep Dive Analysis & Business Insights
+-- ==============================================
+
+-- 15. Genre-Based analysis
+-- Question: Which genres have the longest and shortest total duration?
+-- Business Impact: Helps in understanding the overall listening time for each genre, which is valuable for audio streaming platforms to optimize recommendations.
+
+SELECT genre, SUM(duration) AS total_duration
+FROM metadata
+GROUP BY genre
+ORDER BY total_duration DESC;
+
+-- Insight: 'hiphop' genre has the longest total duration whereas 'pop' genre has the shortest total duration.
+
+-- 16. Genre-Based analysis 
+-- Question: Which genre has the highest average track duration?
+-- Business Impact: Useful for streaming services and playlist optimizations, as longer average track durations could indicate different listening behaviors.
+
+SELECT genre, AVG(duration) AS avg_duration
+FROM metadata
+GROUP BY genre
+ORDER BY avg_duration DESC;
+
+-- 17. Track-level analysis
+-- Question: Are there anomalies in track duration?
+-- Business Impact: Identifies corrupt or incomplete files that could impact dataset quality.
+
+WITH genre_avg AS (
+	SELECT 
+	    genre, 
+	    AVG(duration) AS avg_duration, 
+	    STDDEV(duration) AS std_dev
+	FROM metadata
+	GROUP BY genre
+)
+SELECT 
+    m.filename, 
+    m.genre, 
+    m.duration, 
+    g.avg_duration, 
+    g.std_dev
+FROM metadata m
+JOIN genre_avg g ON m.genre = g.genre
+WHERE m.duration < (g.avg_duration - 5 * g.std_dev)
+OR m.duration > (g.avg_duration + 5 * g.std_dev);
