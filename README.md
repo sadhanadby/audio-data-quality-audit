@@ -42,3 +42,17 @@ Stay tuned for updates!
 - Data is clean and ready for analysis.
 
 **Next Step:** Proceeding with Exploratory Data Analysis (EDA) to derive insights from the dataset.
+
+## Step-03: Exploratory Data Analysis (EDA)
+
+After data cleaning validation, we performed EDA to check for anomalies in the dataset. 
+
+### Key Analyses:
+- **Track Count by Genre**: Verified that each genre contains 100 tracks.
+- **Track Duration Outliers**: No extreme duration values found.
+- **File Path Consistency**: No inconsistencies in file paths.
+- **Duplicate Tracks**: No duplicate entries detected.
+- **Identical Filenames with Different Durations**: No such issues observed.
+
+✅ This confirms that the dataset is clean and structured correctly for further analysis.
+
