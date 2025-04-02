@@ -68,3 +68,23 @@ merged_df = pd.merge(metadata_df, features_selected_df, on='filename', how='left
 merged_df.to_csv(r'data/metadata_with_duration.csv', index=False)
 
 print("metadata_with_duration.csv created successfully!")
+
+# Load the dataset
+file_path = "data/features_30_sec.csv"
+df = pd.read_csv(file_path)
+
+# Select the required columns
+columns_needed = ["filename", "tempo", "length", "rms_mean", "zero_crossing_rate_mean", "spectral_bandwidth_mean",
+                  "mfcc1_mean","mfcc2_mean", "mfcc3_mean","mfcc4_mean","mfcc5_mean",
+                  "mfcc6_mean","mfcc7_mean","mfcc8_mean","mfcc9_mean","mfcc10_mean","mfcc11_mean",
+                  "mfcc12_mean","mfcc13_mean","mfcc14_mean","mfcc15_mean","mfcc16_mean","mfcc17_mean",
+                  "mfcc18_mean","mfcc19_mean","mfcc20_mean", "spectral_centroid_mean", "chroma_stft_mean", "label"]
+
+metadata = df[columns_needed]
+
+# Save to CSV
+metadata.to_csv(r'data/metadata_with_more_features.csv', index=False)
+
+# Show first few rows to verify
+metadata.head()
+
